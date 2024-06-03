@@ -16,7 +16,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-// import axios from "axios";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import Header2 from "../../component/Header2";
 
@@ -29,13 +29,15 @@ const customTheme = createTheme({
 });
 
 export default function Login() {
+ 
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    Email: "",
-    Password: "",
+    USER_CD: "",
+    PASS_CD: "",
   });
 
   const handleInputChange = (e) => {
@@ -43,20 +45,47 @@ export default function Login() {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-    if (formData.Email === "owm@gmail.com" && formData.Password === "owm@1234") {
-      // Navigate to the upload page
-      navigate("/dashboard");
-    } else {
-      setError("Invalid email or password");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        "api/login",
+        {
+          USER_CD: formData.USER_CD,
+          PASS_CD: formData.PASS_CD,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+      
+        navigate("/dashboard");
+      } else {
+        setError("Invalid Employee ID or Password");
+      }
+    } catch (error) {
+      setError("An error occurred while logging in");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <ThemeProvider theme={customTheme}>
-      <Header2/>
-      <Container component="main" maxWidth="xs" sx={{flexGrow: 1, p: 3, marginTop: "55px" }}>
+      <Header2 />
+      <Container
+        component="main"
+        maxWidth="xs"
+        sx={{ flexGrow: 1, p: 3, marginTop: "55px" }}
+      >
         <CssBaseline />
         <Box
           sx={{
@@ -80,20 +109,19 @@ export default function Login() {
               >
                 Sign in
               </Typography>
-              <form onSubmit={handleSubmit}> {/* Add onSubmit to trigger handleSubmit */}
-                <Box
-                  noValidate
-                  sx={{ mt: 1 }}
-                >
+              <form onSubmit={handleSubmit}>
+                {" "}
+                {/* Add onSubmit to trigger handleSubmit */}
+                <Box noValidate sx={{ mt: 1 }}>
                   <TextField
                     margin="normal"
                     required
                     fullWidth
-                    id="Email"
+                    id="USER_CD"
                     label="Email"
-                    name="Email"
+                    name="USER_CD"
                     autoComplete="email"
-                    value={formData.Email}
+                    value={formData.USER_CD}
                     onChange={handleInputChange}
                     autoFocus
                   />
@@ -101,12 +129,12 @@ export default function Login() {
                     margin="normal"
                     required
                     fullWidth
-                    name="Password"
+                    name="PASS_CD"
                     label="Password"
                     type="password"
-                    id="password"
+                    id="PASS_CD"
                     autoComplete="current-password"
-                    value={formData.Password}
+                    value={formData.PASS_CD}
                     onChange={handleInputChange}
                   />
                   <FormControlLabel
