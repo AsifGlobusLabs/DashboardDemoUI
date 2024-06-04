@@ -29,8 +29,6 @@ const customTheme = createTheme({
 });
 
 export default function Login() {
- 
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -65,8 +63,16 @@ export default function Login() {
       );
 
       if (response.status === 200) {
-      
-        navigate("/dashboard");
+        const token = response.headers["x-gl-auth-token"];
+        const userDetails = response.data[0];
+        console.log(userDetails)
+        if (token && userDetails) {
+          sessionStorage.setItem("authToken", token);
+          sessionStorage.setItem("userDetails", JSON.stringify(userDetails)); 
+          navigate("/dashboard");
+        } else {
+          setError("Failed to retrieve token");
+        }
       } else {
         setError("Invalid Employee ID or Password");
       }
@@ -77,6 +83,18 @@ export default function Login() {
       setLoading(false);
     }
   };
+
+
+
+ 
+
+
+
+
+
+
+
+
 
   return (
     <ThemeProvider theme={customTheme}>
@@ -110,8 +128,6 @@ export default function Login() {
                 Sign in
               </Typography>
               <form onSubmit={handleSubmit}>
-                {" "}
-                {/* Add onSubmit to trigger handleSubmit */}
                 <Box noValidate sx={{ mt: 1 }}>
                   <TextField
                     margin="normal"
