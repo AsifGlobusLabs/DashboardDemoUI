@@ -1,18 +1,20 @@
 // menuItems.js
-import React, { useEffect, useState } from "react";
-import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+//import React, { useEffect, useState } from "react";
+//import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import { _post } from "../CommonUtilAPI/GLApiClient";
 
-/*
 export const menuItems = () => {
-  console.log("USER_CD by Sam ", window.sessionStorage.getItem("USER_CD"));
-  const resResult = _post("/Menu", {
+  const menuData = null;
+  console.log("USER_CD by Sam", window.sessionStorage.getItem("USER_CD"));
+  const response = _post("/Menu", {
     USER_CD: window.sessionStorage.getItem("USER_CD"),
   });
-  console.log("Menu", resResult);
-  return resResult;
-};*/
-
+  console.log("Menu", response.data[0]);
+  if (response.status === 200) {
+  }
+  return;
+};
+/*
 export const menuItems = [
   {
     text: "HR",
@@ -34,3 +36,4 @@ export const menuItems = [
     ],
   },
 ];
+*/

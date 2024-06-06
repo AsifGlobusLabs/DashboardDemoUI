@@ -48,7 +48,7 @@ export default function Login() {
 
     try {
       setLoading(true);
-      const response = await _post_WithoutToken("/login", {
+      const response = await _post_WithoutToken("/api/login", {
         USER_CD: formData.USER_CD,
         PASS_CD: formData.PASS_CD,
       });
