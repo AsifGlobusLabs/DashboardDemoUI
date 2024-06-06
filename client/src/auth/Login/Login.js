@@ -19,7 +19,7 @@ import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Header2 from "../../component/Header2";
-
+import { _post_WithoutToken } from "../../CommonUtilAPI/GLApiClient";
 const customTheme = createTheme({
   palette: {
     background: {
@@ -48,7 +48,12 @@ export default function Login() {
 
     try {
       setLoading(true);
-      const response = await axios.post(
+      const response = await _post_WithoutToken("/login", {
+        USER_CD: formData.USER_CD,
+        PASS_CD: formData.PASS_CD,
+      });
+
+      /*await axios.post(
         "api/login",
         {
           USER_CD: formData.USER_CD,
@@ -60,15 +65,17 @@ export default function Login() {
           },
           withCredentials: true,
         }
-      );
+      );*/
 
       if (response.status === 200) {
         const token = response.headers["x-gl-auth-token"];
         const userDetails = response.data[0];
-        console.log(userDetails)
+        console.log(userDetails);
         if (token && userDetails) {
           sessionStorage.setItem("authToken", token);
-          sessionStorage.setItem("userDetails", JSON.stringify(userDetails)); 
+          sessionStorage.setItem("UserId", formData.USER_CD);
+          sessionStorage.setItem("userDetails", JSON.stringify(userDetails));
+
           navigate("/dashboard");
         } else {
           setError("Failed to retrieve token");
@@ -83,18 +90,6 @@ export default function Login() {
       setLoading(false);
     }
   };
-
-
-
- 
-
-
-
-
-
-
-
-
 
   return (
     <ThemeProvider theme={customTheme}>
